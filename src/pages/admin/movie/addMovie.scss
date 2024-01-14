@@ -1,0 +1,54 @@
+.add-movie-form {
+    min-width: 300px;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  
+    label {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: block;
+    }
+  
+    div {
+        margin-bottom: 15px;
+      
+        .movie-input {
+          width: 100%;
+          padding: 8px;
+          margin-top: 5px;
+          box-sizing: border-box;
+        }
+      
+        .MuiTypography-root {
+          font-size: 16px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          display: block;
+        }
+      
+        .show-time-container {
+          display: flex;
+          align-items: center;
+      
+          .show-time {
+            width: 30%;
+            margin-right: 10px;
+          }
+      
+          .movie-input {
+            width: 70%;
+            
+          }
+        }
+      }
+    .MuiButton-root {
+      display: block;
+      margin-top: 15px;
+      width: 100%;
+    }
+  }
+  

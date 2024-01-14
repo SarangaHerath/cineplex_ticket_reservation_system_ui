@@ -1,0 +1,32 @@
+
+  .top_section{
+    display: flex;
+    align-items:center;
+   
+  }
+  .logo{
+    font-size: 30px;
+  }
+  .bars{
+    display: flex;
+    font-size: 25px;
+    /* margin-left: 50px; */
+  }
+  .link{
+    display: flex;
+    color: #ffffff;
+    padding: 10px 15px;
+    gap: 15px;
+    transition: all 0.5s;
+  }
+  .link:hover{
+    background:rgb(113, 180, 231);
+    color: #000;
+    transition: all 0.5s;
+    
+  }
+  .active{
+    background: rgb(192, 229, 252);
+    color: #000;
+    
+  }

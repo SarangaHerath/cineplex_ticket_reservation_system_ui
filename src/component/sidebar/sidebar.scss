@@ -1,0 +1,85 @@
+.container {
+    display: flex;
+    height: 100vh;
+    background: #e8ebf6;
+    .sidebar {
+      // border-right: 1px solid rgb(62, 62, 62);
+      flex: 1;
+      background-color: #010929;
+      .top_section {
+        display: flex;
+        justify-content: space-between;
+        height: 60px;
+        padding: 0px 12px;
+        margin-bottom: 20px;
+  
+        h1 {
+          font-size: 20px;
+          color:rgb(255, 255, 255);
+        }
+  
+        .bars {
+          background-color: rgb(222, 220, 220);
+          border-radius: 30%;
+          padding: 5px;
+  
+          .MenuOpenIcon {
+            color:rgb(61, 97, 226);
+          }
+        }
+      }
+  
+      .link {
+        position: relative;
+  
+        &:hover {
+          .submenu {
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+  
+        .icon {
+          padding: 0px 5px;
+        }
+  
+        .link_text {
+          font-size: 16px;
+        }
+  
+        .submenu {
+          display: flex;
+          
+          flex-direction: column;
+          background-color: #333;
+          margin-left: 30px;
+          position: absolute;
+          left: 100%; // Adjust the left position to appear next to the parent link
+          top: 0;
+          visibility: hidden;
+          opacity: 0;
+          transition: visibility 0.3s, opacity 0.3s linear;
+  
+          .link {
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+  
+            &:hover {
+              background-color: #555;
+            }
+          }
+        }
+      }
+    }
+  
+    .main-wrapper {
+      flex: 5;
+      padding: 10px;
+      margin-top: 50px;
+      main{
+        width: 96%;
+      }
+    }
+  }
+  
