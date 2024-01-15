@@ -1,0 +1,114 @@
+.single-movie-container {
+    padding: 20px;
+    min-width: 300px;
+   
+    h2 {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  
+    .movie-details {
+      margin-top: 20px;
+  
+      .movie-details-section {
+        justify-content: center;
+        display: flex;
+        margin-bottom: 20px;
+  
+        h6 {
+          margin-bottom: 5px;
+        }
+  
+        span {
+          display: block;
+          margin-bottom: 5px;
+          text-align: center;
+          max-width: 100%;
+          overflow: hidden;
+          word-wrap: break-word;
+        }
+      }
+  
+      .show-times-list {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+  
+        .show-time {
+          gap: 20px;
+          padding: 10px 20px;
+          border: 2px solid rgb(2, 10, 100);
+          border-radius: 5px;
+  
+          .show-time-div {
+            display: flex;
+            align-items: center;
+  
+            p {
+              margin-left: 5px;
+            }
+          }
+        }
+      }
+  
+      .buttondiv {
+        display: flex;
+        justify-content: center;
+  
+        .book-tickets-btn {
+          margin-top: 20px;
+          background-color: #03264b;
+          color: #fff;
+          padding: 10px 20px;
+          cursor: pointer;
+          border-radius: 5px;
+        }
+      }
+  
+      .dialog-box {
+        display: flex;
+        flex-direction: column;
+  
+        select,
+        input {
+          margin-bottom: 10px;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+      }
+    }
+   
+  }
+  
+  .MuiDialog-root {
+    .MuiDialog-root-form {
+     width: 300px;
+      .add-reservation-form {
+        display: flex;
+        flex-direction: column;
+        
+      .form-title{
+        margin-top: 10px;
+      }
+        select,
+        input {
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+        .movie-select{
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .movie-input {
+          width: 93%;
+          margin-top: 5px;
+        }
+      }
+    }
+  }

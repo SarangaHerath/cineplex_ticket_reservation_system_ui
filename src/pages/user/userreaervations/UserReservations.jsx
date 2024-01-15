@@ -27,17 +27,18 @@ import { Link } from "react-router-dom";
 import { Delete, Edit, Update } from "@mui/icons-material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AddMovie } from "./AddMovie";
-import { Sidebar } from "../../../component/sidebar/Sidebar";
-import { EditMovie } from "./EditMovie";
+import { Navbar } from "../../../component/navbar/Navbar";
 
 
-function createData( movieName, movieDescription,movieId) {
+function createData(reservationId,status, createdDate, noOfSeat, movieName, time,userName) {
   return {
-    
+    reservationId,
+    status,
+    createdDate,
+    noOfSeat,
     movieName,
-    movieDescription,
-    movieId
+    time,
+    userName
   };
 }
 
@@ -70,13 +71,29 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-
-  
   {
-    id: "movieId",
+    id: "reservationId",
     numeric: false,
     disablePadding: false,
-    label: "Movie Id",
+    label: "Reservation Id",
+  },
+  {
+    id: "status",
+    numeric: false,
+    disablePadding: false,
+    label: "Status",
+  },
+  {
+    id: "createdDate",
+    numeric: false,
+    disablePadding: false,
+    label: "Created Date",
+  },
+  {
+    id: "noOfSeat",
+    numeric: false,
+    disablePadding: false,
+    label: "No Of Seat",
   },
   {
     id: "movieName",
@@ -85,10 +102,16 @@ const headCells = [
     label: "Movie Name",
   },
   {
-    id: "movieDescription",
+    id: "time",
     numeric: false,
     disablePadding: false,
-    label: "Movie Description",
+    label: "Show Time",
+  },
+  {
+    id: "userName",
+    numeric: false,
+    disablePadding: false,
+    label: "User Name",
   },
   {
     id: "action",
@@ -207,7 +230,7 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-export const MovieList = () => {
+export const UserReservations = () => {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("unitPrice");
   const [selected, setSelected] = React.useState([]);
@@ -220,7 +243,7 @@ export const MovieList = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/movie/getAll",
+          "http://localhost:8080/api/v1/reservation/getAll",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -232,10 +255,13 @@ export const MovieList = () => {
   
         const newRows = responseData.map((data) =>
           createData(
-            data.movieName,
-            data.movieDescription,
-            data.movieId
-            
+            data.reservationId,
+            data.status,
+            data.createdDate,
+            data.noOfSeat,
+            data.responseMovieDto.movieName,
+            data.responseShowTimeDto.time,
+            data.responseUserDto.userName
           )
         );
         console.log(newRows);
@@ -257,7 +283,7 @@ export const MovieList = () => {
   const handleDelete = async (id) => {
     try {
       // Send DELETE request to the API endpoint
-      await axios.delete(`http://localhost:8080/api/v1/movie/delete/${id}`,
+      await axios.delete(`http://localhost:8080/api/v1/reservation/cancel/${id}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -277,7 +303,7 @@ export const MovieList = () => {
       }, 1500);
     } catch (error) {
       console.error("Error deleting data:", error);
-      toast.error(`Warning! Can't delete – this movie is have reservations`);
+      toast.error(`Warning! Can't delete – this movie is part of a showtime`);
       setTimeout(() => {
        window.location.reload();
       }, 2500);
@@ -355,36 +381,10 @@ export const MovieList = () => {
     setOpenEdit(false);
   };
   return (
-    <Sidebar>
-    <Box sx={{}}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "20px",
-        }}
-      ><ToastContainer />
-        <Button variant="contained" onClick={handleOpen}>
-          New Movie +{" "}
-        </Button>
-      </div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Grow}
-        transitionDuration={500}
-      >
-       <AddMovie></AddMovie>
-      </Dialog>
-      <Dialog
-        open={openedit}
-        onClose={handleEditClose}
-        TransitionComponent={Grow}
-        transitionDuration={500}
-      >
-        
-       <EditMovie id={selectedMovie ? selectedMovie.movieId : null} onClose={handleEditClose} />
-      </Dialog>
+  <>
+  <Navbar></Navbar>
+    <Box sx={{margin:4}}>
+   
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         {rows.length > 0 ? (
@@ -421,9 +421,13 @@ export const MovieList = () => {
                       >
                       
 
-                      <TableCell align="left">{row.movieId}</TableCell>
+                      <TableCell align="left">{row.reservationId}</TableCell>
+                      <TableCell align="left">{row.status}</TableCell>
+                      <TableCell align="left">{row.createdDate}</TableCell>
+                      <TableCell align="left">{row.noOfSeat}</TableCell>
                       <TableCell align="left">{row.movieName}</TableCell>
-                      <TableCell align="left">{row.movieDescription}</TableCell>
+                      <TableCell align="left">{row.time}</TableCell>
+                      <TableCell align="left">{row.userName}</TableCell>
                       
                           <TableCell align="left">
                             <IconButton
@@ -436,7 +440,7 @@ export const MovieList = () => {
                             </IconButton>
                             <IconButton
                               aria-label="Delete"
-                              onClick={() => handleDelete(row.movieId)}
+                              onClick={() => handleDelete(row.showTimeId)}
                               sx={{color:'#E74C3C'}}
                             >
                               <Delete />
@@ -468,6 +472,6 @@ export const MovieList = () => {
         label="Dense padding"
       /> */}
     </Box>
-    </Sidebar>
+    </>
   );
 };

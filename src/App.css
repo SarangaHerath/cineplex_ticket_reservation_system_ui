@@ -4,3 +4,17 @@
   text-decoration: none;
   
 }
+body{
+  padding: 0;
+  text-decoration: none;
+}
+.container .main-wrapper {
+  flex: 5;
+  padding: 0px;
+  margin-top: 0px;
+}
+main{
+  width: 100%;
+  padding: 20px;
+  flex: 1;
+}

@@ -29,12 +29,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AddMovie } from "./AddMovie";
 import { Sidebar } from "../../../component/sidebar/Sidebar";
-import { EditMovie } from "./EditMovie";
+import { EditMovieShowTime } from "./EditMovieShowTime";
 
 
-function createData( movieName, movieDescription,movieId) {
+function createData(showTimeId, time, availableSeats, date, movieName, movieDescription,movieId) {
   return {
-    
+    showTimeId,
+    time,
+    availableSeats,
+    date,
     movieName,
     movieDescription,
     movieId
@@ -70,13 +73,29 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-
-  
   {
-    id: "movieId",
+    id: "showTimeId",
     numeric: false,
     disablePadding: false,
-    label: "Movie Id",
+    label: "Show Time Id",
+  },
+  {
+    id: "time",
+    numeric: false,
+    disablePadding: false,
+    label: "Time",
+  },
+  {
+    id: "availableSeats",
+    numeric: false,
+    disablePadding: false,
+    label: "Available Seats",
+  },
+  {
+    id: "date",
+    numeric: false,
+    disablePadding: false,
+    label: "Date",
   },
   {
     id: "movieName",
@@ -183,7 +202,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-         Movie List
+         Movie Show Time List
         </Typography>
       )}
 
@@ -207,7 +226,7 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-export const MovieList = () => {
+export const MovieShowTimeList = () => {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("unitPrice");
   const [selected, setSelected] = React.useState([]);
@@ -220,7 +239,7 @@ export const MovieList = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/movie/getAll",
+          "http://localhost:8080/api/v1/showTime/getAll",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -232,10 +251,13 @@ export const MovieList = () => {
   
         const newRows = responseData.map((data) =>
           createData(
-            data.movieName,
-            data.movieDescription,
-            data.movieId
-            
+            data.showTimeId,
+            data.time,
+            data.availableSeats,
+            data.date,
+            data.responseMovieDto.movieName,
+            data.responseMovieDto.movieDescription,
+            data.responseMovieDto.movieId
           )
         );
         console.log(newRows);
@@ -257,7 +279,7 @@ export const MovieList = () => {
   const handleDelete = async (id) => {
     try {
       // Send DELETE request to the API endpoint
-      await axios.delete(`http://localhost:8080/api/v1/movie/delete/${id}`,
+      await axios.delete(`http://localhost:8080/api/v1/showTime/delete/${id}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -277,7 +299,7 @@ export const MovieList = () => {
       }, 1500);
     } catch (error) {
       console.error("Error deleting data:", error);
-      toast.error(`Warning! Can't delete – this movie is have reservations`);
+      toast.error(`Warning! Can't delete – this movie is part of a showtime`);
       setTimeout(() => {
        window.location.reload();
       }, 2500);
@@ -383,7 +405,7 @@ export const MovieList = () => {
         transitionDuration={500}
       >
         
-       <EditMovie id={selectedMovie ? selectedMovie.movieId : null} onClose={handleEditClose} />
+       <EditMovieShowTime id={selectedMovie ? selectedMovie.showTimeId : null} onClose={handleEditClose} />
       </Dialog>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
@@ -421,9 +443,16 @@ export const MovieList = () => {
                       >
                       
 
-                      <TableCell align="left">{row.movieId}</TableCell>
+                      <TableCell align="left">{row.showTimeId}</TableCell>
+                      <TableCell align="left">{row.time}</TableCell>
+                      <TableCell align="left">{row.availableSeats}</TableCell>
+                      <TableCell align="left">{row.date}</TableCell>
                       <TableCell align="left">{row.movieName}</TableCell>
-                      <TableCell align="left">{row.movieDescription}</TableCell>
+                      <TableCell align="left" style={{ maxWidth: '100px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+  {row.movieDescription}
+</TableCell>
+
+
                       
                           <TableCell align="left">
                             <IconButton
@@ -436,7 +465,7 @@ export const MovieList = () => {
                             </IconButton>
                             <IconButton
                               aria-label="Delete"
-                              onClick={() => handleDelete(row.movieId)}
+                              onClick={() => handleDelete(row.showTimeId)}
                               sx={{color:'#E74C3C'}}
                             >
                               <Delete />

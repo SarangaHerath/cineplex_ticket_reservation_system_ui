@@ -1,37 +1,49 @@
-
 import React, { useState, useEffect } from 'react';
-import { FaTh, FaUserAlt, FaShoppingBag, FaBuilding, FaShoppingBasket, FaFileInvoice, FaMapMarkedAlt, FaDownload, FaSellcast, FaMoneyCheck, FaAccessibleIcon, FaBullseye } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { FaDashcube, FaJediOrder, FaBullseye, FaListOl, FaUser } from 'react-icons/fa';
+import { NavLink, useNavigate } from 'react-router-dom';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import './sidebar.scss';
-import { RadioButtonUnchecked } from '@mui/icons-material';
-import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+
+import { Navbar } from '../navbar/Navbar';
+
 export const Sidebar = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [expandedMenus, setExpandedMenus] = useState({});
+  const navigate = useNavigate();
 
   const toggle = () => setIsOpen(!isOpen);
-  const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
 
-  const toggleMainMenu = () => {
-    setIsMainMenuOpen(!isMainMenuOpen);
-  };
-  
-  const toggleSubMenu = (index) => {
-    setExpandedMenus((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
-  // const toggle = () => setIsOpen(!isOpen);
+  const userRole = JSON.parse(localStorage.getItem('userDetails') || '{}').roles;
+  console.log(userRole);
 
-  const menuItem = [
-    { path: '/admin', name: 'Dashboard', icon: <FaTh style={{ color: 'blue' }} /> },
-    { path: '/reservations', name: 'Reservations', icon: <FaTh style={{ color: 'blue' }} /> },
-    { path: '/movieList', name: 'Movie List', icon: <FaTh style={{ color: 'blue' }} /> },
-    { path: '/showtimes', name: 'Show Times', icon: <FaShoppingBag style={{ color: 'peru' }} /> },
-   
-  ];
+  const isAdmin = userRole === 'ADMIN';
+  const isUser = userRole === 'USER';
+
+  const generateMenuItems = () => {
+    if (isAdmin) {
+      return [
+        { path: '/reservationList', name: 'Reservations', icon: <FaJediOrder style={{ color: 'orange' }} /> },
+        { path: '/movieList', name: 'Movie List', icon: <FaBullseye style={{ color: 'white' }} /> },
+        { path: '/movieshowtimeList', name: 'Movie Show Time List', icon: <FaListOl style={{ color: 'pink' }} /> },
+        { path: '/userList', name: 'Users List', icon: <FaUser style={{ color: 'yellow' }} /> },
+      ];
+    } else {
+      return [];
+    }
+  };
+
+  const menuItem = generateMenuItems();
+
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('userDetails');
+
+    // Redirect to login page
+    setTimeout(() => {
+      navigate('/');
+      window.location.reload();
+    }, 1500);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,7 +60,7 @@ export const Sidebar = ({ children }) => {
 
   return (
     <div className="container">
-      <div
+     { isAdmin?<div
         style={{
           width: isOpen ? '250px' : '60px',
           borderRight: isOpen ? '1px solid rgb(62, 62, 62)' : 'none',
@@ -57,54 +69,32 @@ export const Sidebar = ({ children }) => {
         className="sidebar"
       >
         <div className="top_section">
-          <NavLink to="/" className="logo-link" activeClassName="active">
+          {/* <NavLink to="/" className="logo-link" activeClassName="active"> */}
             <h1 style={{ display: isOpen ? 'block' : 'none' }} className="logo">
-            CINEPLEX THEATER
+              CINEPLEX THEATER
             </h1>
-          </NavLink>
+          {/* </NavLink> */}
           <div style={{ marginLeft: isOpen ? '0px' : '0px' }} className="bars">
             <MenuOpenIcon className="MenuOpenIcon" onClick={toggle} />
           </div>
         </div>
         {menuItem.map((item, index) => (
-          <div key={index}>
-            {item.submenu ? (
-              <div
-                className="link"
-                onClick={() => {
-                  toggleSubMenu(index);
-                }}
-              >
-                <div className="icon">{item.icon}</div>
-                <div style={{ display: isOpen ? 'block' : 'none' }} className="link_text">
-                  {item.name}
-                </div>
-              </div>
-            ) : (
-              <NavLink to={item.path} className="link" activeClassName="active">
-                <div className="icon">{item.icon}</div>
-                <div style={{ display: isOpen ? 'block' : 'none' }} className="link_text">
-                  {item.name}
-                </div>
-              </NavLink>
-            )}
-            {item.submenu && expandedMenus[index] && isOpen && (
-              <div className="submenu" style={{ marginLeft: '50px', fontSize: '12px' }}>
-                {item.submenu.map((subItem, subIndex) => (
-                  <NavLink key={subIndex} to={subItem.path} className="link" activeClassName="active">
-                    <FaBullseye className="MenuOpenIcon" onClick={toggle} />
-                    <div className="link_text" style={{ fontSize: '12px' }}>
-                      {subItem.name}
-                    </div>
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
+          <NavLink to={item.path} className="link" activeClassName="active" key={index}>
+            <div className="icon">{item.icon}</div>
+            <div style={{ display: isOpen ? 'block' : 'none' }} className="link_text">
+              {item.name}
+            </div>
+          </NavLink>
         ))}
-      </div>
+        <div className="link" onClick={handleLogout}>
+          <div className="icon">🚪</div>
+          <div style={{ display: isOpen ? 'block' : 'none' }} className="link_text">
+            Logout
+          </div>
+        </div>
+      </div>:""}
       <div className="main-wrapper">
-        
+        {isUser ? <Navbar /> : ''}
         <main>{children}</main>
       </div>
     </div>

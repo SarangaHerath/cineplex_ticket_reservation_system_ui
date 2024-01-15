@@ -27,21 +27,17 @@ import { Link } from "react-router-dom";
 import { Delete, Edit, Update } from "@mui/icons-material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AddMovie } from "./AddMovie";
 import { Sidebar } from "../../../component/sidebar/Sidebar";
-import { EditMovie } from "./EditMovie";
 
 
-function createData( movieName, movieDescription,movieId) {
-  return {
-    
-    movieName,
-    movieDescription,
-    movieId
+function createData( userId, firstName,lastName,userName) {
+  return {  
+    userId,
+    firstName,
+    lastName,
+    userName
   };
 }
-
-
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -73,22 +69,28 @@ const headCells = [
 
   
   {
-    id: "movieId",
+    id: "userId",
     numeric: false,
     disablePadding: false,
-    label: "Movie Id",
+    label: "User Id",
   },
   {
-    id: "movieName",
+    id: "firstName",
     numeric: false,
     disablePadding: false,
-    label: "Movie Name",
+    label: "First Name",
   },
   {
-    id: "movieDescription",
+    id: "lastName",
     numeric: false,
     disablePadding: false,
-    label: "Movie Description",
+    label: "Last Name",
+  },
+  {
+    id: "userName",
+    numeric: false,
+    disablePadding: false,
+    label: "User Name",
   },
   {
     id: "action",
@@ -183,7 +185,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-         Movie List
+         Users List
         </Typography>
       )}
 
@@ -207,7 +209,7 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-export const MovieList = () => {
+export const UsersList = () => {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("unitPrice");
   const [selected, setSelected] = React.useState([]);
@@ -220,7 +222,7 @@ export const MovieList = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/movie/getAll",
+          "http://localhost:8080/api/v1/user/getAll",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -232,9 +234,10 @@ export const MovieList = () => {
   
         const newRows = responseData.map((data) =>
           createData(
-            data.movieName,
-            data.movieDescription,
-            data.movieId
+            data.userId,
+            data.firstName,
+            data.lastName,
+            data.userName
             
           )
         );
@@ -257,7 +260,7 @@ export const MovieList = () => {
   const handleDelete = async (id) => {
     try {
       // Send DELETE request to the API endpoint
-      await axios.delete(`http://localhost:8080/api/v1/movie/delete/${id}`,
+      await axios.delete(`http://localhost:8080/api/v1/user/delete/${id}`,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -364,9 +367,9 @@ export const MovieList = () => {
           marginBottom: "20px",
         }}
       ><ToastContainer />
-        <Button variant="contained" onClick={handleOpen}>
+        {/* <Button variant="contained" onClick={handleOpen}>
           New Movie +{" "}
-        </Button>
+        </Button> */}
       </div>
       <Dialog
         open={open}
@@ -374,7 +377,7 @@ export const MovieList = () => {
         TransitionComponent={Grow}
         transitionDuration={500}
       >
-       <AddMovie></AddMovie>
+       {/* <AddMovie></AddMovie> */}
       </Dialog>
       <Dialog
         open={openedit}
@@ -383,7 +386,7 @@ export const MovieList = () => {
         transitionDuration={500}
       >
         
-       <EditMovie id={selectedMovie ? selectedMovie.movieId : null} onClose={handleEditClose} />
+       {/* <EditMovie id={selectedMovie ? selectedMovie.movieId : null} onClose={handleEditClose} /> */}
       </Dialog>
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
@@ -421,22 +424,16 @@ export const MovieList = () => {
                       >
                       
 
-                      <TableCell align="left">{row.movieId}</TableCell>
-                      <TableCell align="left">{row.movieName}</TableCell>
-                      <TableCell align="left">{row.movieDescription}</TableCell>
+                      <TableCell align="left">{row.userId}</TableCell>
+                      <TableCell align="left">{row.firstName}</TableCell>
+                      <TableCell align="left">{row.lastName}</TableCell>
+                      <TableCell align="left">{row.userName}</TableCell>
                       
                           <TableCell align="left">
-                            <IconButton
-                             sx={{color:'#3498DB'}}
-                              aria-label="Edit"
-                              onClick={() => handleOpenEdit(row)} // Pass the row to handleOpenEdit
-                  >
-                            
-                              <Edit />
-                            </IconButton>
+                          
                             <IconButton
                               aria-label="Delete"
-                              onClick={() => handleDelete(row.movieId)}
+                              onClick={() => handleDelete(row.userId)}
                               sx={{color:'#E74C3C'}}
                             >
                               <Delete />

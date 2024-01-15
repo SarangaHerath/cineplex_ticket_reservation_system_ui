@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export const AddMovie = () => {
   const navigate = useNavigate();
   const authToken = localStorage.getItem('auth_token');
-  console.log(authToken)
+
   const initialShowTimeList = [
     { time: '08:00:00', availableSeats: '' },
     { time: '10:30:00', availableSeats: '' },
@@ -19,37 +19,50 @@ export const AddMovie = () => {
   const [formData, setFormData] = useState({
     movieName: '',
     movieDescription: '',
+    selectedDate: '',
     selectedShowTimes: initialShowTimeList,
   });
-console.log(formData)
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSeatsChange = (index, event) => {
-    const selectedShowTimes = [...formData.selectedShowTimes];
-    selectedShowTimes[index] = {
-      ...selectedShowTimes[index],
-      availableSeats: event.target.value,
-    };
-
-    setFormData({
-      ...formData,
-      selectedShowTimes,
-    });
+    const availableSeats = event.target.value;
+  
+    if (availableSeats === '' || (Number(availableSeats) >= 0 && Number(availableSeats) <= 10)) {
+      const selectedShowTimes = [...formData.selectedShowTimes];
+      selectedShowTimes[index] = {
+        ...selectedShowTimes[index],
+        availableSeats: availableSeats,
+      };
+  
+      setFormData({
+        ...formData,
+        selectedShowTimes,
+      });
+    } else {
+      // Notify the user about invalid input
+      toast.error('Please enter a valid number of available seats (0-10)');
+    }
   };
- 
+
+  const handleDateChange = (event) => {
+    const { value } = event.target;
+    setFormData({ ...formData, selectedDate: value });
+  };
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     if (authToken) {
       try {
-        // Format the payload to match the desired structure
         const formattedData = {
           movieName: formData.movieName,
           movieDescription: formData.movieDescription,
           requestShowTimeDtoList: formData.selectedShowTimes.map((showTime) => ({
             time: showTime.time,
+            date: formData.selectedDate,
             availableSeats: showTime.availableSeats
           })),
         };
@@ -63,16 +76,17 @@ console.log(formData)
             },
           }
         );
-  
+
         console.log('Movie added successfully:', response.data);
         toast.success('Movie added successfully');
-  
+
         setFormData({
           movieName: '',
           movieDescription: '',
+          selectedDate: '',
           selectedShowTimes: initialShowTimeList,
         });
-  
+
         setTimeout(() => {
           window.location.reload();
         }, 1500);
@@ -82,8 +96,6 @@ console.log(formData)
       }
     }
   };
-  
-  
 
   return (
     <div>
@@ -103,14 +115,23 @@ console.log(formData)
         </div>
         <div>
           <TextareaAutosize
-            
             placeholder="Movie Description"
             name="movieDescription"
             value={formData.movieDescription}
             onChange={handleInputChange}
             required
             className="movie-input"
-           
+          />
+        </div>
+        <div>
+          <label>Date:</label>
+          <input
+            type="date"
+            name="selectedDate"
+            value={formData.selectedDate}
+            onChange={handleDateChange}
+            required
+            className="movie-input"
           />
         </div>
         <div>
@@ -127,7 +148,6 @@ console.log(formData)
                 onChange={(e) => handleSeatsChange(index, e)}
                 required
                 className="movie-input"
-              
               />
             </div>
           ))}

@@ -1,0 +1,56 @@
+.wrapper{
+    width: 100%;
+   
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0;
+        height: 60px;
+       
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add bottom shadow here */
+        padding-left: 30px;
+        padding-right: 30px;
+        .nav-right{
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            .profile-icon {
+                margin-right: 10px; /* Adjust spacing between profile icon and search bar */
+                background-color: rgb(184, 186, 188);
+                height: 40px;
+                width: 40px;
+                border-radius: 50%;
+              
+            margin-right: 20px;
+                img {
+                  width: 40px; /* Adjust the size of the profile icon */
+                  height: 40px;
+                  border-radius: 50%; /* Make it a circle if your icon is square */
+                }
+              }
+        }
+     
+        
+          .search-bar {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+            input {
+              padding: 5px;
+              margin-right: 5px;
+              border: 1px solid #ccc; /* Add a border to the input field */
+              border-radius: 4px;
+            }
+        
+            button {
+              padding: 5px 10px;
+              background-color: white; /* Adjust the background color as needed */
+              border: 1px solid #ccc; /* Add a border to the button */
+              border-radius: 4px;
+              cursor: pointer;
+            }
+          }
+        }
+}
