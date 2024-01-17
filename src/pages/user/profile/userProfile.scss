@@ -7,14 +7,17 @@
       text-align: center;
     }
   
-    .movie-details {
+    .userdetails {
       margin-top: 20px;
-      
-      .movie-details-section {
+      justify-content: center;
+      display: flex;
+     
+      .userdetails-section {
         justify-content: center;
         display: flex;
         margin-bottom: 20px;
-      
+        flex-direction: column;
+   gap: 5;
         h6 {
           margin-bottom: 5px;
         }
@@ -69,7 +72,7 @@
       .dialog-box {
         display: flex;
         flex-direction: column;
-       
+  
         select,
         input {
           margin-bottom: 10px;
@@ -90,7 +93,7 @@
       .add-reservation-form {
         display: flex;
         flex-direction: column;
-      
+        
       .form-title{
         margin-top: 10px;
       }

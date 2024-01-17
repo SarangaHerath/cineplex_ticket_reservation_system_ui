@@ -33,9 +33,10 @@
         .show-time-container {
           display: flex;
           align-items: center;
-      
+          
+          padding: 0px;
           .show-time {
-            width: 30%;
+            width: 20%;
             margin-right: 10px;
           }
       
@@ -47,7 +48,7 @@
       }
     .MuiButton-root {
       display: block;
-      margin-top: 15px;
+      // margin-top: 15px;
       width: 100%;
     }
   }

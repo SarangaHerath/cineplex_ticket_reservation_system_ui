@@ -11,6 +11,8 @@ import { UsersList } from './pages/admin/user/UsersList';
 import { SingleMovie } from './pages/user/singlemovie/SingleMovie';
 import { UserReservations } from './pages/user/userreaervations/UserReservations';
 import './App.css';
+import UserProfile from './pages/user/profile/UserProfile';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
@@ -43,16 +45,18 @@ function App() {
             <Route path="/movieList" element={<MovieList />} />
             <Route path="/movieshowtimeList" element={<MovieShowTimeList />} />
             <Route path="/reservationList" element={<ReservationList />} />
-            <Route path="/userreservationList" element={<UserReservations />} />
+            <Route path="/userreservationList/:userId" element={<UserReservations />} />
             <Route path="/userList" element={<UsersList />} />
             <Route path="/home" element={<Home />} />
             <Route path="/movie-details/:movieId" element={<SingleMovie />} />
+            <Route path="/userprofile/:userId" element={<UserProfile />} />
           </>
         )}
 
         {/* Add a default route to handle unknown routes */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   );
 }

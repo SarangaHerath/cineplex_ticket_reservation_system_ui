@@ -16,6 +16,9 @@ export const Navbar = () => {
       window.location.reload();
     }, 1500);
   };
+  
+  const userId = JSON.parse(localStorage.getItem('userDetails') || '{}').userId;
+ 
   return (
     <div className='wrapper'>
       <div className='navbar'>
@@ -31,17 +34,23 @@ export const Navbar = () => {
      <Link to={"/home"} style={{textDecoration:"none"}}>
         <h4>Home</h4>
      </Link>
-     <Link to={"/userreservationList"} style={{textDecoration:"none"}}>
-     <h4>Reservation List</h4> </Link>
+     <Link to={`/userreservationList/${userId}`} style={{ textDecoration: "none" }}>
+      <h4>Reservation List</h4>
+    </Link>
+
      <div  onClick={handleLogout} style={{cursor:"pointer",color:'red'}}>
      <h4>Logout</h4>
             
         
           </div>
-     <div className='profile-icon'>
+          <Link to={`/userprofile/${userId}`} style={{ textDecoration: "none" }}>
+            <div className='profile-icon'>
+              
+            </div>
+          </Link>
      </div>
      </div>
    </div>
-    </div>
+
   );
 };

@@ -206,7 +206,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-         Movie List
+         Reservation List
         </Typography>
       )}
 
@@ -297,13 +297,13 @@ export const ReservationList = () => {
   
       // Clear the selected items
       setSelected([]);
-      toast.success("Movie deleted successfully");
+      toast.success("Reservation deleted successfully");
       setTimeout(() => {
        window.location.reload();
       }, 1500);
     } catch (error) {
       console.error("Error deleting data:", error);
-      toast.error(`Warning! Can't delete – this movie is part of a showtime`);
+      toast.error(`Delete failed !!`);
       setTimeout(() => {
        window.location.reload();
       }, 2500);
@@ -458,6 +458,7 @@ export const ReservationList = () => {
                             <IconButton
                               aria-label="Delete"
                               onClick={() => handleDelete(row.reservationId)}
+                              disabled={row.status === 'CANCEL'}
                               sx={{color:'#E74C3C'}}
                             >
                               <Delete />

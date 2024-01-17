@@ -1,19 +1,19 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem } from '@mui/material';
+// SingleMovie.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { CalendarMonth, Chair } from '@mui/icons-material';
-import './singleMovie.scss';
-import { Sidebar } from '../../../component/sidebar/Sidebar';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import './editUserReservation.scss';
 import { Navbar } from '../../../component/navbar/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
-export const SingleMovie = () => {
-  const { movieId } = useParams();
+export const EditUserReservation = ({ movieId, reservationId, onClose }) => {
+    console.log("res idddddddd", reservationId);
+    console.log("mov idddddddd", movieId);
   const [movieDetails, setMovieDetails] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [reservationData, setReservationData] = useState({ noOfSeat: 0, showTimeId: '' });
+  const [reservationData, setReservationData] = useState({ noOfSeat: 1, showTimeId: '' });
   const authToken = localStorage.getItem('auth_token');
 
   useEffect(() => {
@@ -24,7 +24,9 @@ export const SingleMovie = () => {
             Authorization: `Bearer ${authToken}`,
           },
         });
+        console.log(response.data);
         setMovieDetails(response.data.data);
+        // Set default showTimeId to the first show time
         setReservationData((prevData) => ({ ...prevData, showTimeId: response.data.data.responseShowTimeDtoList[0].showTimeId }));
       } catch (error) {
         console.error('Error fetching movie details:', error);
@@ -33,7 +35,7 @@ export const SingleMovie = () => {
 
     fetchMovieDetails();
   }, [movieId, authToken]);
- 
+
   const handleDialogOpen = () => {
     setOpenDialog(true);
   };
@@ -44,15 +46,17 @@ export const SingleMovie = () => {
 
   const storedUserDetails = localStorage.getItem('userDetails');
   const user = storedUserDetails ? JSON.parse(storedUserDetails) : null;
-  console.log(reservationData.showTimeId)
+console.log(reservationData.showTimeId)
   const handleReservation = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:8080/api/v1/reservation/save',
+      const response = await axios.put(
+        'http://localhost:8080/api/v1/reservation/update',
         {
+          reservationId:reservationId,  
           noOfSeat: reservationData.noOfSeat,
           movieId: movieId,
-          showTimeId: reservationData.showTimeId,
+          showTimeId: parseInt(reservationData.showTimeId, 10),
+
           userId: user.userId,
         },
         {
@@ -61,20 +65,19 @@ export const SingleMovie = () => {
           },
         }
       );
-
       console.log('Reservation successful:', response.data);
-      toast.success('Reservation successfully added');
+      toast.success('Update reservation successfully');
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
       handleDialogClose();
     } catch (error) {
       console.error('Error making reservation:', error);
-      toast.error(`Error updating movie: ${error.message}`);
+      toast.error(`Error updating reservation: ${error.message}`);
     }
   };
-  const [availableSeats, setAvailableSeats] = useState();
+  const [availableSeats, setAvailableSeats] = useState("");
   useEffect(() => {
     const fetchSeats = async () => {
       try {
@@ -91,60 +94,32 @@ export const SingleMovie = () => {
 
     fetchSeats();
   }, [reservationData.showTimeId]);
-  console.log("Mava",availableSeats)
   if (!movieDetails) {
     return <div>Loading...</div>;
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="single-movie-container">
-        <h2>{movieDetails.responseMovieDto.movieName}</h2>
-        <div className="movie-details">
-          <div className="movie-details-section">
-            <span>{movieDetails.responseMovieDto.movieDescription}</span>
-          </div>
-
-          <div className="show-times-list">
-            {movieDetails.responseShowTimeDtoList.map((showTime) => (
-              <div key={showTime.showTimeId}>
-                <div className="show-time">
-                  <div className="show-time-div">
-                    <CalendarMonth />
-                    <p>{showTime.time}</p>
-                  </div>
-                  <div className="show-time-div">
-                    <Chair />
-                    <p>Seats: {showTime.availableSeats}</p>
-                  </div>
-                </div>
+    
+      <div className="update-reservation-container"> 
+        <ToastContainer />
+            <form className="edit-reservation-form">
+            <label className="form-title">Resavation Id</label>
+              <div>
+                <input
+                  label="Reservation Id"
+                  type="number"
+                  value={reservationId}
+                  fullWidth
+                  className="rese-input"
+                  disabled
+                />
               </div>
-            ))}
-          </div>
-          <div className='buttondiv'>
-            <button className="book-tickets-btn" onClick={handleDialogOpen}>
-              Book Reservation
-            </button>
-          </div>
-        </div>
-        <Dialog open={openDialog} onClose={handleDialogClose} className="MuiDialog-root">
-          <DialogTitle>Book Reservation</DialogTitle>
-          <DialogContent className="MuiDialog-root-form">
-            
-            <form className="add-reservation-form">
-            <ToastContainer />
+
               <label className="form-title">Select Time</label>
               <div>
-                <select
-                  className="movie-select"
+                <select className="movie-select"
                   value={reservationData.showTimeId}
-                  onChange={(e) =>
-                    setReservationData((prevData) => ({ ...prevData, showTimeId: e.target.value || ''
-                  
-                  }))
-                    
-                  }
+                  onChange={(e) => setReservationData((prevData) => ({ ...prevData, showTimeId: e.target.value || '' }))}
                   fullWidth
                 >
                   {movieDetails.responseShowTimeDtoList.map((showTime) => (
@@ -160,13 +135,11 @@ export const SingleMovie = () => {
                   label="Number of Seats"
                   type="number"
                   value={reservationData.noOfSeat}
-                  onChange={(e) =>
-                    setReservationData((prevData) => ({ ...prevData, noOfSeat: e.target.value }))
-                  }
-                  max={availableSeats}
-                  min={0}
+                  onChange={(e) => setReservationData((prevData) => ({ ...prevData, noOfSeat: e.target.value }))}
                   fullWidth
                   className="movie-input"
+                  max={availableSeats}
+                  min={0}
                 />
               </div>
               <label className="form-title">Movie Id</label>
@@ -191,15 +164,11 @@ export const SingleMovie = () => {
                   disabled
                 />
               </div>
-            </form>
-          </DialogContent>
-          <DialogActions>
+            </form>      
             <Button onClick={handleReservation} variant="contained" color="primary">
-              Confirm Reservation
+              Update Reservation
             </Button>
-          </DialogActions>
-        </Dialog>
       </div>
-    </>
+    
   );
 };

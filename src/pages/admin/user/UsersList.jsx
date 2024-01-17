@@ -274,13 +274,13 @@ export const UsersList = () => {
   
       // Clear the selected items
       setSelected([]);
-      toast.success("Movie deleted successfully");
+      toast.success("User deleted successfully");
       setTimeout(() => {
        window.location.reload();
       }, 1500);
     } catch (error) {
       console.error("Error deleting data:", error);
-      toast.error(`Warning! Can't delete – this movie is have reservations`);
+      toast.error(`Warning! Can't delete – this user is have reservations`);
       setTimeout(() => {
        window.location.reload();
       }, 2500);

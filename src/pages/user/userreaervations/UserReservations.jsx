@@ -23,20 +23,22 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { Button, Dialog, Grow, LinearProgress } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Delete, Edit, Update } from "@mui/icons-material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from "../../../component/navbar/Navbar";
+import { EditUserReservation } from "./EditUserReservation";
 
 
-function createData(reservationId,status, createdDate, noOfSeat, movieName, time,userName) {
+function createData(reservationId,status, createdDate, noOfSeat, movieName,movieId, time,userName) {
   return {
     reservationId,
     status,
     createdDate,
     noOfSeat,
     movieName,
+    movieId,
     time,
     userName
   };
@@ -206,7 +208,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-         Movie List
+         User reservation List
         </Typography>
       )}
 
@@ -239,20 +241,23 @@ export const UserReservations = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
   const authToken = localStorage.getItem('auth_token');
+  const { userId } = useParams();
+  console.log(userId)
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        // Use the userName parameter in the URL
         const response = await axios.get(
-          "http://localhost:8080/api/v1/reservation/getAll",
+          `http://localhost:8080/api/v1/reservation/getReservationByUserId/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
           }
         );
-        const responseData = response.data.data; // Access the 'data' property in the response
+        const responseData = response.data.data;
         console.log(responseData);
-  
+
         const newRows = responseData.map((data) =>
           createData(
             data.reservationId,
@@ -260,6 +265,7 @@ export const UserReservations = () => {
             data.createdDate,
             data.noOfSeat,
             data.responseMovieDto.movieName,
+            data.responseMovieDto.movieId,
             data.responseShowTimeDto.time,
             data.responseUserDto.userName
           )
@@ -270,9 +276,10 @@ export const UserReservations = () => {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
-  }, [authToken]);
+  }, [authToken, userId]); // Include userName as a dependency
+
   
 
   const handleRequestSort = (event, property) => {
@@ -297,13 +304,13 @@ export const UserReservations = () => {
   
       // Clear the selected items
       setSelected([]);
-      toast.success("Movie deleted successfully");
+      toast.success("Reservation canceled successfully");
       setTimeout(() => {
        window.location.reload();
       }, 1500);
     } catch (error) {
       console.error("Error deleting data:", error);
-      toast.error(`Warning! Can't delete – this movie is part of a showtime`);
+      toast.error(`Error reservation canceled !`);
       setTimeout(() => {
        window.location.reload();
       }, 2500);
@@ -355,6 +362,7 @@ export const UserReservations = () => {
   const [open, setOpen] = React.useState(false);
   const [openedit, setOpenEdit] = React.useState(false);
   const [selectedMovie, setselectedMovie] = React.useState(null);
+  const [selectedReservation, setselectedReservation] = React.useState(null);
 
 
   const handleOpen = () => {
@@ -374,8 +382,10 @@ export const UserReservations = () => {
 
   const handleOpenEdit = (row) => {
     setselectedMovie(row);
+    setselectedReservation(row);
     setOpenEdit(true);
   };
+  
  
   const handleEditClose = () => {
     setOpenEdit(false);
@@ -383,8 +393,22 @@ export const UserReservations = () => {
   return (
   <>
   <Navbar></Navbar>
+  <ToastContainer />
     <Box sx={{margin:4}}>
-   
+    <Dialog
+  open={openedit}
+  onClose={handleEditClose}
+  TransitionComponent={Grow}
+  transitionDuration={500}
+>
+  <EditUserReservation
+  movieId={selectedMovie ? selectedMovie.movieId : null}
+  reservationId={selectedReservation ? selectedReservation.reservationId : null}
+  onClose={handleEditClose}
+/>
+
+</Dialog>
+
       <Paper sx={{ width: "100%", mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         {rows.length > 0 ? (
@@ -434,13 +458,15 @@ export const UserReservations = () => {
                              sx={{color:'#3498DB'}}
                               aria-label="Edit"
                               onClick={() => handleOpenEdit(row)} // Pass the row to handleOpenEdit
+                              disabled={row.status === 'CANCEL'}
                   >
                             
                               <Edit />
                             </IconButton>
                             <IconButton
                               aria-label="Delete"
-                              onClick={() => handleDelete(row.showTimeId)}
+                              onClick={() => handleDelete(row.reservationId)}
+                              disabled={row.status === 'CANCEL'}
                               sx={{color:'#E74C3C'}}
                             >
                               <Delete />

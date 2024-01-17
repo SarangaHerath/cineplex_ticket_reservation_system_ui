@@ -96,7 +96,7 @@ const handleLogin = async (e) => {
         </form>
       </div>
       <div className="background-container">
-       <img src="http://localhost:5173/src/assets/20944170.jpg" alt="" />
+       <img src="http://localhost:5173/src/assets/353202002.jpg" alt="" />
       </div>
       </div>
     </div>

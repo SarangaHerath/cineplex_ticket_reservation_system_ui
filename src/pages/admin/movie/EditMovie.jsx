@@ -115,15 +115,15 @@ console.log(id)
       );
   
       console.log(formattedData);
-      toast.success('Show time updated successfully');
+      toast.success('movie updated successfully');
   
       setTimeout(() => {
         // navigate(`/movie-details/${id}`);
         window.location.reload();
       }, 1500);
     } catch (error) {
-      console.error('Error updating show time:', error);
-      toast.error(`Error updating show time: ${error.message}`);
+      console.error('Error updating movie:', error);
+      toast.error(`Error updating movie: ${error.message}`);
     }
   };
   
@@ -132,7 +132,7 @@ console.log(id)
     <div>
       <ToastContainer />
       <form onSubmit={handleFormSubmit} className="edit-movie-form">
-        <Typography variant="h6">Edit Show Time Seats</Typography>
+        <Typography variant="h6">Edit movie</Typography>
         <div>
           <label>Movie Name:</label>
           <input
@@ -184,7 +184,7 @@ console.log(id)
           ))}
         </div>
         <Button type="submit" variant="contained" color="primary">
-          Update Show Time
+          Update movie
         </Button>
       </form>
     </div>

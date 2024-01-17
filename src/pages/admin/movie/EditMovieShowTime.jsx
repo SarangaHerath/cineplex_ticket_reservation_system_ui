@@ -113,13 +113,13 @@ console.log("",formattedData)
       handleClose();
       toast.success('Show time updated successfully');
       setTimeout(() => {
-        // window.location.reload();
+        window.location.reload();
       }, 1500);
     } catch (error) {
       console.error('Error updating show time:', error);
       toast.error(`Error updating show time: ${error.message}`);
       setTimeout(() => {
-        // window.location.reload();
+        window.location.reload();
       }, 1500);
     }
   };
